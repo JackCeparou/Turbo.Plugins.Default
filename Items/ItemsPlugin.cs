@@ -21,6 +21,7 @@ namespace Turbo.Plugins.Default
         public WorldDecoratorCollection BookDecorator { get; set; }
         public WorldDecoratorCollection DeathsBreathDecorator { get; set; }
         public WorldDecoratorCollection InArmorySetDecorator { get; set; }
+        public WorldDecoratorCollection BountyCacheDecorator { get; set; }
 
         public bool EnableCustomSpeak { get; set; }
         public Dictionary<ISnoItem, string> CustomSpeakTable { get; private set; }
@@ -310,6 +311,28 @@ namespace Turbo.Plugins.Default
                     TextFont = Hud.Render.CreateFont("tahoma", 7, 255, 255, 255, 255, true, false, false)
                 }
                 );
+
+            BountyCacheDecorator = new WorldDecoratorCollection(
+                new GroundCircleDecorator(Hud)
+                {
+                    Brush = Hud.Render.CreateBrush(192, 200, 200, 0, -3),
+                    Radius = 1.5f,
+                },
+                new GroundLabelDecorator(Hud)
+                {
+                    BackgroundBrush = Hud.Render.CreateBrush(160, 200, 200, 0, 0),
+                    BorderBrush = Hud.Render.CreateBrush(0, 0, 0, 0, 0),
+                    TextFont = Hud.Render.CreateFont("tahoma", 7, 255, 0, 0, 0, true, false, false)
+                },
+                new MapShapeDecorator(Hud)
+                {
+                    ShapePainter = new RotatingTriangleShapePainter(Hud),
+                    Brush = Hud.Render.CreateBrush(255, 200, 200, 0, 3),
+                    ShadowBrush = Hud.Render.CreateBrush(96, 0, 0, 0, 1),
+                    Radius = 8,
+                    RadiusTransformator = new StandardPingRadiusTransformator(Hud, 333)
+                }
+                );
         }
 		
         private string GetItemName(IItem item)
@@ -381,6 +404,12 @@ namespace Turbo.Plugins.Default
                 if (item.SnoItem.Sno == 2087837753)
                 {
                     DeathsBreathDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    continue;
+                }
+
+                if (item.SnoItem.MainGroupCode == "horadriccache")
+                {
+                    BountyCacheDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
                     continue;
                 }
 
