@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,6 +24,8 @@ namespace Turbo.Plugins.Default
         public WorldDecoratorCollection InArmorySetDecorator { get; set; }
         public WorldDecoratorCollection BountyCacheDecorator { get; set; }
 
+        public Func<IItem, string> ItemNameFunc { get; set; }
+
         public bool EnableCustomSpeak { get; set; }
         public Dictionary<ISnoItem, string> CustomSpeakTable { get; private set; }
 
@@ -43,6 +46,8 @@ namespace Turbo.Plugins.Default
             EnableSpeakSet = false;
             EnableSpeakAncientSet = false;
             EnableSpeakPrimalSet = false;
+
+            ItemNameFunc = (item) => GetItemName(item);
 
             EnableCustomSpeak = false;
             CustomSpeakTable = new Dictionary<ISnoItem, string>();
@@ -334,7 +339,7 @@ namespace Turbo.Plugins.Default
                 }
                 );
         }
-		
+
         private string GetItemName(IItem item)
         {
             var name = (item.RareName != null ? item.RareName + ", " : null) + item.FullNameLocalized;
@@ -369,13 +374,13 @@ namespace Turbo.Plugins.Default
                         switch (item.AncientRank)
                         {
                             case 1:
-                                AncientSetDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                                AncientSetDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                                 break;
                             case 2:
-                                PrimalSetDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                                PrimalSetDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                                 break;
                             default:
-                                SetDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                                SetDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                                 break;
                         }
                     }
@@ -384,13 +389,13 @@ namespace Turbo.Plugins.Default
                         switch (item.AncientRank)
                         {
                             case 1:
-                                AncientDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                                AncientDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                                 break;
                             case 2:
-                                PrimalDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                                PrimalDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                                 break;
                             default:
-                                LegendaryDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                                LegendaryDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                                 break;
                         }
                     }
@@ -398,43 +403,43 @@ namespace Turbo.Plugins.Default
 
                 if (item.SnoItem.HasGroupCode("uber") || item.SnoItem.HasGroupCode("riftkeystone"))
                 {
-                    UtilityDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    UtilityDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                 }
 
                 if (item.SnoItem.Sno == 2087837753)
                 {
-                    DeathsBreathDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    DeathsBreathDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                     continue;
                 }
 
                 if (item.SnoItem.MainGroupCode == "horadriccache")
                 {
-                    BountyCacheDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    BountyCacheDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                     continue;
                 }
 
                 if (item.IsNormal && (item.KeepDecision == ItemKeepDecision.LooksGood))
                 {
-                    NormalKeepDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    NormalKeepDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                 }
                 else if (item.IsMagic && (item.KeepDecision == ItemKeepDecision.LooksGood))
                 {
-                    MagicKeepDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    MagicKeepDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                 }
                 else if (item.IsRare && (item.KeepDecision == ItemKeepDecision.LooksGood))
                 {
-                    RareKeepDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    RareKeepDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                 }
                 else if (item.IsLegendary && (item.KeepDecision == ItemKeepDecision.LooksGood) && !legendaryDisplayed)
                 {
-                    LegendaryKeepDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                    LegendaryKeepDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                 }
 
                 if (!Hud.Game.IsInTown)
                 {
                     if (item.SnoItem.Kind == ItemKind.book)
                     {
-                        BookDecorator.Paint(layer, item, item.FloorCoordinate, GetItemName(item));
+                        BookDecorator.Paint(layer, item, item.FloorCoordinate, ItemNameFunc(item));
                     }
                 }
 			}
